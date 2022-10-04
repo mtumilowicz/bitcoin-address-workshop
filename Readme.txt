@@ -11,6 +11,15 @@
     * https://www.baeldung.com/java-secure-random
     * https://www.baeldung.com/scala/enumeratum
 
+## preface
+* goals of this workshop
+    * introduction to encoding formats: DER, hex, sha256, ripemd160
+    * understanding of bouncy castle lib
+        * generating elliptic curve key pair
+        * deriving public key from private key
+        * entities: SECObjectIdentifiers, ECDomainParameters, ECNamedDomainParameters
+    * showing how bitcoin address is created from public key
+
 ## keys, addresses
 * string of digits and characters
 * derived from public keys
