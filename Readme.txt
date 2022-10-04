@@ -19,7 +19,7 @@
         * generating elliptic curve key pair
         * deriving public key from private key
         * entities: SECObjectIdentifiers, ECDomainParameters, ECNamedDomainParameters
-    * showing how bitcoin address is created from public key
+    * understanding how bitcoin address is created from public key
 
 ## formats
 * DER
