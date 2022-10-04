@@ -64,7 +64,18 @@
             hex encoded:            3056301006072a8648ce3d020106052b8104000a03420004f51b58c89eebcdcdedfb6733bfe45fb884186e8277910ea7dea83fd44380a96de8671ddb36f0bf38d502d9ec7b1973ffe6d696431edc163d73f95cf9acd2180a
             from openssl asn1parse: --------------------------------------------0004f51b58c89eebcdcdedfb6733bfe45fb884186e8277910ea7dea83fd44380a96de8671ddb36f0bf38d502d9ec7b1973ffe6d696431edc163d73f95cf9acd2180a
             ```
-
+        * and then convert it back to DER:
+            * prefix: 3056301006072a8648ce3d020106052b8104000a0342
+            * raw key: 0004f51b58c89eebcdcdedfb6733bfe45fb884186e8277910ea7dea83fd44380a96de8671ddb36f0bf38d502d9ec7b1973ffe6d696431edc163d73f95cf9acd2180a
+            * command
+                ```
+                (echo -n 3056301006072a8648ce3d020106052b8104000a0342; echo 0004f51b58c89eebcdcdedfb6733bfe45fb884186e8277910ea7dea83fd44380a96de8671ddb36f0bf38d502d9ec7b1973ffe6d696431edc163d73f95cf9acd2180a) | xxd -r -p | base64
+                ```
+            * result
+                ```
+                MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE9RtYyJ7rzc3t+2czv+RfuIQYboJ3kQ6n3qg/1EOAqW3o
+                Zx3bNvC/ONUC2ex7GXP/5taWQx7cFj1z+Vz5rNIYCg==
+                ```
 
 * hex - base16
     * values: (0–F)
