@@ -17,12 +17,10 @@ object Secp256k1 {
   val namedDomainParameters = new ECNamedDomainParameters(curveName, domainParameters)
 
   def derivePublicKey(privateKey: Array[Byte]): Array[Byte] = {
-    val privateKeyParams = new ECPrivateKeyParameters(
-      new BigInteger(1, privateKey),
-      domainParameters
-    )
+    val privateKeyAsBigInt = new BigInteger(1, privateKey) // we have to force signum = 1, otherwise exception: Scalar is not in the interval [1, n - 1]
+
     val publicKeyParams = new ECPublicKeyParameters(
-      curveParameters.getG.multiply(privateKeyParams.getD),
+      curveParameters.getG.multiply(privateKeyAsBigInt),
       namedDomainParameters
     )
     SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(publicKeyParams).getEncoded("DER")
