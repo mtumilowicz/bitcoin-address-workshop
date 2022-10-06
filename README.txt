@@ -206,3 +206,20 @@
         * point P on a circle
         * adding 1000 or 1001 times 42.57 degrees will yield a point that requires a bit more
         complex calculation to be found
+
+## compressed public keys
+* introduced to bitcoin to reduce the size of transactions
+* reduce size of bitcoin blockchain database
+* each public key requires 520 bits (prefix + x + y)
+* public key is a point (x,y) on an elliptic curve
+    * (x, y^2 mod p = (x^3 + 7) mod p)
+    * we can store only x and sign
+        * reduce the size by 256 bits
+* uncompressed public keys have a prefix of 04
+    * compressed - either a 02 or a 03 prefix
+    * in binary arithmetic y coordinate is either even or odd (corresponds to the positive/negative sign)
+        * 02 if the y is even, and 03 if it is odd
+* corresponds to the same private key
+* remark
+    * a single private key can produce a public key expressed in two different formats that produce two
+    different bitcoin addresses
