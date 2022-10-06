@@ -1,4 +1,7 @@
-# bitcoin-notes
+[![Build Status](https://app.travis-ci.com/mtumilowicz/bitcoin-address-workshop.svg?branch=master)](https://app.travis-ci.com/mtumilowicz/bitcoin-address-workshop)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+# bitcoin-address-workshop
 * references
     * https://www.oreilly.com/library/view/mastering-bitcoin-2nd/9781491954379/
     * https://www.manning.com/books/grokking-bitcoin
