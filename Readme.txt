@@ -15,6 +15,8 @@
     * https://www.ietf.org/rfc/rfc5639.txt
     * https://cryptobook.nakov.com/asymmetric-key-ciphers/elliptic-curve-cryptography-ecc
     * https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication
+    * https://bitcoin.stackexchange.com/questions/85387/what-is-the-reasoning-behind-the-choice-of-2256-232-977-for-the-prime-on-the-s
+    * https://crypto.stackexchange.com/questions/70507/in-elliptic-curve-what-does-the-point-at-infinity-look-like
 
 ## preface
 * goals of this workshop
@@ -139,73 +141,59 @@
             * checksum = first four bytes of hashOfHash
 
 ## elliptic curves
-* elliptic curve visualisation: https://www.desmos.com/calculator/ialhd71we3?lang=pl
-* elliptic curve cryptography (ECC) uses elliptic curves over the finite field 𝔽p (where p is prime and p > 3) or 𝔽2m (where the fields size p = 2_m_)
-    * field is a square matrix of size p x p and the points on the curve are limited to integer coordinates within the field only
-    * All algebraic operations within the field (like point addition and multiplication) result in another point within the field
-    * in practice the "elliptic curves" used in cryptography are "sets of points in square matrix", not classical "curves"
-* Intuitively, this is not dissimilar to the fact that if you had a point P on a circle, adding 42.57 degrees to its angle may still be a point "not too far" from P, but adding 1000 or 1001 times 42.57 degrees will yield a point that requires a bit more complex calculation to be found
-* to create public key in DER format we need
-    ```
-    SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(publicKeyParams).getEncoded("DER")
-    ```
-* publicKeyParams are created from a constructor
-    ```
-    public ECPublicKeyParameters(
-        ECPoint             q, // point representing the public key
-        ECDomainParameters  parameters) // domain parameters representing the curve
-    ```
-* ECNamedDomainParameters = ASN1ObjectIdentifier (curve name) and ECDomainParameters (domainParameters)
-    ```
-    ECDomainParameters(
-            ECCurve     curve,
-            ECPoint     G,
-            BigInteger  n,
-            BigInteger  h)
-    ```
-* Cryptography uses elliptic curves in a simplified form (Weierstras form)
-    * y2 = x3 + _a_x + b
-    * For example, the NIST curve secp256k1 (used in Bitcoin)
-        * y2 = x3 + 7 (the above elliptic curve equation, where a = 0 and b = 7)
+* elliptic curve visualisation
+    * https://www.desmos.com/calculator/caabrmnwxq?lang=pl
+* elliptic curve cryptography (ECC)
+    * elliptic curves over the finite field 𝔽p (where p is prime and p > 3) or 𝔽2^p (where p is prime)
+        * field is a square matrix of size p x p
+        * points on the curve are limited to integer coordinates within the field only
+    * uses elliptic curves in a simplified form (Weierstras form)
+        * Weierstrass form: y^2 = x^3 + ax + b, (a and b are real numbers)
+        * example - Bitcoin curve
+            * y^2 = x^3 + 7
+            * p = 2^256 - 2^32 - 2^9 -2^8 - 2^7 - 2^6 - 2^4 - 1
+* bouncy castle
+    * to create public key in DER format we need
+        ```
+        SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(publicKeyParams).getEncoded("DER")
+        ```
+    * publicKeyParams are created from a constructor
+        ```
+        public ECPublicKeyParameters(
+            ECPoint             q, // point representing the public key
+            ECDomainParameters  parameters) // domain parameters representing the curve
+        ```
+    * ECNamedDomainParameters = ASN1ObjectIdentifier (curve name) and ECDomainParameters (domainParameters)
+        ```
+        ECDomainParameters(
+                ECCurve     curve,
+                ECPoint     G,
+                BigInteger  n,
+                BigInteger  h)
+        ```
 * domain parameters
-    * ECC elliptic curves are described by a set of elliptic curve domain parameters, such as the curve equation
-    parameters, the field parameters and the generator point coordinates
-        * These parameters are specified in cryptography standards (ex. SEC 2: Recommended Elliptic
-        Curve Domain Parameters)
+    * ECC elliptic curves are described by a set of elliptic curve domain parameters
+        * example: curve equation parameters, the field parameters and the generator point coordinates
+        * parameters are specified in cryptography standards
+            * example: SEC 2: Recommended Elliptic Curve Domain Parameters
     * a,b,p define a curve (y^2 == x^3+a^x +b) mod p
         * "Bitcoin curve" secp256k1 takes the form: y2 ≡ x3 + 7 (mod p)
+    * n - order of the curve
+        * total number of all EC points on the curve
+        * includes also the special point called "point at infinity"
+            * act as the group's neutral element
     * G - generation point
-        * for the elliptic curves over finite fields, the ECC cryptosystems define a special pre-defined
-        (constant) EC point called generator point G (base point), which can generate any other point
-        in its subgroup over the elliptic curve by multiplying G by some integer in the range [0...r]
-            * The number r is called "order" of the cyclic subgroup (the total number of all points in the subgroup).
-        * For curves with cofactor = 1 there is only one subgroup and the order n of the curve (the total number of different points over the curve, including the infinity) is equal to the number r
-        * When G and n are carefully selected, and the cofactor = 1, all possible EC points on the curve (including the special point infinity) can be generated from the generator G by multiplying it by integer in the range [1...n]
-            * This integer n is known as "order of the curve".
-        * It is important to know that the order r of the subgroup, obtained from certain EC generator point G (which may be different from the order of the curve) defines the total number of all possible private keys for this curve: r = n / h (curve order, divided by the curve cofactor)
-        * To summarize, in the ECC cryptography the EC points, together with the generator point G form cyclic groups (or cyclic subgroups), which means that a number r exists (r > 1), such that r * G = 0 * G = infinity and all points in the subgroup can be obtained by multiplying G by integer in the range [1...r]. The number r is called order of the group (or subgroup).
-    * q is the prime order of the group generated by G
-    * h is the cofactor of G in E, i.e., #E(GF(p))/q
-        * h is often 1
-        * Аn elliptic curve over a finite field can form a finite cyclic algebraic group, which consists of all the points on the curve
-            * In a cyclic group, if two EC points are added or an EC point is multiplied to an integer, the result is another EC point from the same cyclic group (and on the same curve)
-        * The order of the curve is the total number of all EC points on the curve
-        * This total number of points includes also the special point called "point at infinity", which is obtained when a point is multiplied by 0
-        * Some curves form a single cyclic group (holding all their EC points), while others form several non-overlapping cyclic subgroups (each holding a subset of the curve's EC points)
-            * In the second scenario the points on the curve are split into h cyclic subgroups (partitions), each of order r (each subgroup holds equal number of points)
-            *  The order of entire group is n = h * r (the number of subgroups, multiplied by the number of points in each subgroup)
-        * The cofactor is typically expressed by the following formula: h = n / r
-            * n is the order of the curve (the number of all its points)
-            * h is the curve cofactor (the number of non-overlapping subgroups of points, which together hold all curve points)
-            * r is the order of the subgroups (the number of points in each subgroup, including the infinity point for each subgroup)
-        * In other words, the points over an elliptic curve stay in one or several non-overlapping subsets, called cyclic subgroups
-            * The number of subgroups is called "cofactor"
-            * The total number of points in all subgroups is called "order" of the curve and is usually denoted by n
-            * If the curve consists of only one cyclic subgroup, its cofactor h = 1. If the curve consists of several subgroups, its cofactor > 1
-        * Example of elliptic curve having cofactor = 1 is secp256k1.
-        * Example of elliptic curve having cofactor = 8 is Curve25519.
-    * A private key is a big integer d, and a public key is the result of the ECC point multiplication [d]G
-        * private keys in the ECC are integers (in the range of the curve's field size, typically 256-bit integers)
-        *  public keys in the ECC are EC points - pairs of integer coordinates {x, y}, laying on the curve
-            * Due to their special properties, EC points can be compressed to just one coordinate + 1 bit (odd or even)
-            * Thus the compressed public key, corresponding to a 256-bit ECC private key, is a 257-bit integer
+        * some curves form a single cyclic group
+        * others form several non-overlapping cyclic subgroups
+            * points on the curve are split into h cyclic subgroups
+        * G can generate any other point in its subgroup by multiplying G by some integer in the range [0...r]
+            * r - "order" of the cyclic subgroup (the total number of all points in the subgroup)
+        * for curves with cofactor = 1 there is only one subgroup
+    * h is the cofactor of G
+        * points over an elliptic curve stay in one or several non-overlapping subsets, called cyclic subgroups
+            * number of subgroups is called "cofactor"
+        * if the curve consists of only one cyclic subgroup, its cofactor h = 1
+            * example: secp256k1
+        * if the curve consists of several subgroups, its cofactor > 1
+            * example: Curve25519
+                * cofactor = 8
