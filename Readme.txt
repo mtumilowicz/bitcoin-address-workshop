@@ -190,8 +190,7 @@
             * r - "order" of the cyclic subgroup (the total number of all points in the subgroup)
         * for curves with cofactor = 1 there is only one subgroup
     * h is the cofactor of G
-        * points over an elliptic curve stay in one or several non-overlapping subsets, called cyclic subgroups
-            * number of subgroups is called "cofactor"
+        * number of cyclic subgroups is called "cofactor"
         * if the curve consists of only one cyclic subgroup, its cofactor h = 1
             * example: secp256k1
         * if the curve consists of several subgroups, its cofactor > 1
