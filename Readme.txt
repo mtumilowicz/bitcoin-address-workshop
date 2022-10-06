@@ -196,3 +196,10 @@
         * if the curve consists of several subgroups, its cofactor > 1
             * example: Curve25519
                 * cofactor = 8
+* deriving public key from private key
+    * private key = randomly generated number k
+    * public key = private key * G
+    * intuitively
+        * point P on a circle
+        * adding 1000 or 1001 times 42.57 degrees will yield a point that requires a bit more
+        complex calculation to be found
