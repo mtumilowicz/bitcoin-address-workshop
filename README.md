@@ -40,12 +40,18 @@
         * Length octets
         * Contents octets
         * End-of-contents octets
-    * exercise (BitcoinAddressTest could be helpful)
-        * using Secp256k1 object, derive public key (DER) from private key
+    * exercise
+        * using Secp256k1.derivePublicKey, derive public key (DER) from private key
             ```
-            a76448f06981aeb02df458f657be1f2994729f8df0de672ecc0095421089f5bc
+            a76448f06981aeb02df458f657be1f2994729f8df0de672ecc0095421089f5bc // HEX private key
+            ```
+            ```
+            3056301006072a8648ce3d020106052b8104000a03420004f51b58c89eebcdcdedfb6733bfe45fb884186e8277910ea7dea83fd44380a96de8671ddb36f0bf38d502d9ec7b1973ffe6d696431edc163d73f95cf9acd2180a
             ```
         * encode public key in base64
+            ```
+            echo "3056301006072a8648ce3d020106052b8104000a03420004f51b58c89eebcdcdedfb6733bfe45fb884186e8277910ea7dea83fd44380a96de8671ddb36f0bf38d502d9ec7b1973ffe6d696431edc163d73f95cf9acd2180a" | xxd -r -p | base64
+            ```
             ```
             MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE9RtYyJ7rzc3t+2czv+RfuIQYboJ3kQ6n3qg/1EOAqW3oZx3bNvC/ONUC2ex7GXP/5taWQx7cFj1z+Vz5rNIYCg==
             ```
