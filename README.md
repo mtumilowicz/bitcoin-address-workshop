@@ -149,18 +149,8 @@
                         * Base58 result prefix: 5, K, or L
             * checksum = first four bytes of hashOfHash
 
-## elliptic curves
-* elliptic curve visualisation
-    * https://www.desmos.com/calculator/caabrmnwxq?lang=pl
-* elliptic curve cryptography (ECC)
-    * elliptic curves over the finite field 𝔽p (where p is prime and p > 3) or 𝔽2^p (where p is prime)
-        * field is a square matrix of size p x p
-        * points on the curve are limited to integer coordinates within the field only
-    * uses elliptic curves in a simplified form (Weierstras form)
-        * Weierstrass form: y^2 = x^3 + ax + b, (a and b are real numbers)
-        * example - Bitcoin curve
-            * y^2 = x^3 + 7
-            * p = 2^256 - 2^32 - 2^9 -2^8 - 2^7 - 2^6 - 2^4 - 1
+## bouncy castle
+* it would be valuable to take a look here: https://github.com/mtumilowicz/elliptic-curve-workshop
 * bouncy castle
     * to create public key in DER format we need
         ```
@@ -176,42 +166,10 @@
         ```
         ECDomainParameters(
                 ECCurve     curve,
-                ECPoint     G,
-                BigInteger  n,
-                BigInteger  h)
+                ECPoint     G, // generation point
+                BigInteger  n, // order of point G
+                BigInteger  h) // cofactor of G
         ```
-* domain parameters
-    * ECC elliptic curves are described by a set of elliptic curve domain parameters
-        * example: curve equation parameters, the field parameters and the generator point coordinates
-        * parameters are specified in cryptography standards
-            * example: SEC 2: Recommended Elliptic Curve Domain Parameters
-    * a,b,p define a curve (y^2 == x^3+a^x +b) mod p
-        * "Bitcoin curve" secp256k1 takes the form: y2 ≡ x3 + 7 (mod p)
-    * n - order of the curve
-        * total number of all EC points on the curve
-        * includes also the special point called "point at infinity"
-            * act as the group's neutral element
-    * G - generation point
-        * some curves form a single cyclic group
-        * others form several non-overlapping cyclic subgroups
-            * points on the curve are split into h cyclic subgroups
-        * G can generate any other point in its subgroup by multiplying G by some integer in the range [0...r]
-            * r - "order" of the cyclic subgroup (the total number of all points in the subgroup)
-        * for curves with cofactor = 1 there is only one subgroup
-    * h is the cofactor of G
-        * number of cyclic subgroups is called "cofactor"
-        * if the curve consists of only one cyclic subgroup, its cofactor h = 1
-            * example: secp256k1
-        * if the curve consists of several subgroups, its cofactor > 1
-            * example: Curve25519
-                * cofactor = 8
-* deriving public key from private key
-    * private key = randomly generated number k
-    * public key = private key * G
-    * intuitively
-        * point P on a circle
-        * adding 1000 or 1001 times 42.57 degrees will yield a point that requires a bit more
-        complex calculation to be found
 
 ## compressed public keys
 * introduced to bitcoin to reduce the size of transactions
